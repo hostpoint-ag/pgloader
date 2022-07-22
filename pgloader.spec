@@ -1,6 +1,6 @@
 Summary:            extract, transform and load data into PostgreSQL
 Name:               pgloader
-Version:            3.6.2
+Version:            3.6.6
 Release:            22%{?dist}
 License:            The PostgreSQL Licence
 Group:              System Environment/Base
@@ -9,9 +9,11 @@ Source0:            %{url}/archive/v%{version}.tar.gz
 
 BuildRequires: sbcl
 BuildRequires: freetds-devel
+BuildRequires: openssl-devel
 BuildRequires: sqlite-devel
 BuildRequires: zlib-devel
 Requires: freetds
+Requires: openssl-devel
 Requires: sbcl
 Requires: zlib
 Requires: sqlite

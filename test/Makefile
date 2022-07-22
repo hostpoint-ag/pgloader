@@ -44,6 +44,8 @@ REGRESS= allcols.load 		    \
 
 PGLOADER ?= ../build/bin/pgloader
 PGSUPERUSER ?= postgres
+export DBPATH = sqlite/sqlite.db # needed by sqlite-env.load
+export SOURCEFILE = data/2013_Gaz_113CDs_national.txt # needed by csv-districts-env.out
 
 EXTRA_OPTS =
 ifneq (,$(findstring ccl,$(CL)))
@@ -52,7 +54,7 @@ endif
 
 regress: clean-out $(addprefix regress/out/, $(REGRESS:.load=.out)) ;
 
-clean-out:
+clean clean-out:
 	rm -f regress/out/*
 
 local: prepare $(LOCAL)
@@ -61,10 +63,11 @@ remote: prepare $(REMOTE:.load=.out)
 
 all: prepare $(OUT)
 
-prepare: bossa.sql sakila
+prepare: bossa.sql
 	-dropdb -U $(PGSUPERUSER) pgloader
 	-dropdb -U $(PGSUPERUSER) stocks
 	-dropdb -U $(PGSUPERUSER) ip4r
+	-createuser -U $(PGSUPERUSER) --superuser `whoami`
 	createdb -U $(PGSUPERUSER) -O `whoami` pgloader
 	createdb -U $(PGSUPERUSER) -O `whoami` stocks
 	createdb -U $(PGSUPERUSER) -O `whoami` ip4r

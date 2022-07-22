@@ -1,6 +1,6 @@
 # pgloader build tool
 APP_NAME   = pgloader
-VERSION    = 3.6.2
+VERSION    = 3.6.6
 
 # use either sbcl or ccl
 CL	   = sbcl
@@ -24,7 +24,7 @@ QLDIR      = $(BUILDDIR)/quicklisp
 MANIFEST   = $(BUILDDIR)/manifest.ql
 LATEST     = $(BUILDDIR)/pgloader-latest.tgz
 
-BUNDLEDIST = 2020-02-18
+BUNDLEDIST = 2022-02-20
 BUNDLENAME = pgloader-bundle-$(VERSION)
 BUNDLEDIR  = $(BUILDDIR)/bundle/$(BUNDLENAME)
 BUNDLE     = $(BUILDDIR)/$(BUNDLENAME).tgz
@@ -70,7 +70,9 @@ DEBUILD_ROOT = /tmp/pgloader
 all: $(PGLOADER)
 
 clean:
-	rm -rf $(LIBS) $(QLDIR) $(MANIFEST) $(BUILDAPP) $(PGLOADER) docs/_build
+	rm -rf $(LIBS) $(QLDIR) $(MANIFEST) $(BUILDAPP) $(PGLOADER) \
+		buildapp.log build/bundle/* build/pgloader-bundle* build/quicklisp.lisp docs/_build
+	$(MAKE) -C test clean
 
 $(QLDIR)/local-projects/qmynd:
 	git clone --depth 1 https://github.com/qitab/qmynd.git $@
@@ -182,7 +184,7 @@ clean-bundle:
 $(BUNDLETESTD):
 	mkdir -p $@
 
-$(BUNDLEDIR):
+$(BUNDLEDIR): quicklisp
 	mkdir -p $@
 	$(CL) $(CL_OPTS) --load $(QLDIR)/setup.lisp      \
              --eval '(defvar *bundle-dir* "$@")'         \

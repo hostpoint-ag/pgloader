@@ -24,9 +24,11 @@ FROM debian:stable-slim as builder
 
   COPY ./ /opt/src/pgloader
 
+ARG DYNSIZE=4096
+
   RUN mkdir -p /opt/src/pgloader/build/bin \
       && cd /opt/src/pgloader \
-      && make clones save
+      && make DYNSIZE=$DYNSIZE clones save
 
 FROM debian:stable-slim
 
@@ -43,5 +45,7 @@ FROM debian:stable-slim
       && rm -rf /var/lib/apt/lists/*
 
   COPY --from=builder /opt/src/pgloader/build/bin/pgloader /usr/local/bin
+
+  ADD conf/freetds.conf /etc/freetds/freetds.conf
 
   LABEL maintainer="Dimitri Fontaine <dim@tapoueh.org>"
